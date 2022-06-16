@@ -1,40 +1,10 @@
-const mediasoup = require('mediasoup');
-
 const Room = require('./helpers/Room');
 const Peer = require('./helpers/Peer');
 
-const config = require('./config');
+const getMediasoupWorker = require('./mediasoupInit');
 
 module.exports = (io) => {
-  let workers = [];
-  let nextMediasoupWorkerIdx = 0;
-
-  let roomList = new Map();
-
-  (async () => {
-    const { CPU, worker: { logLevel, logTags, rtcMinPort, rtcMaxPort } } = config.mediasoup;
-
-    for (const thread of CPU) {
-      const worker = await mediasoup.createWorker({
-        logLevel, logTags, rtcMinPort, rtcMaxPort
-      });
-
-      worker.on('died', () => {
-        console.error('mediasoup worker died, exiting in 2 seconds... [pid:%d]', worker.pid);
-        setTimeout(() => process.exit(1), 2000);
-      });
-
-      workers.push(worker);
-    }
-  })();
-
-  const getMediasoupWorker = () => {
-    const worker = workers[nextMediasoupWorkerIdx];
-
-    if (++nextMediasoupWorkerIdx === workers.length) nextMediasoupWorkerIdx = 0;
-
-    return worker;
-  };
+  const roomList = new Map();
 
   io.on('connection', (socket) => {
     socket.on('createRoom', async ({ room_id }, callback) => {

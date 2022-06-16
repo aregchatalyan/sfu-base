@@ -1,4 +1,6 @@
-if (location.href.substr(0, 5) !== 'https') location.href = 'https' + location.href.substr(4, location.href.length - 4);
+if (location.href.substring(0, 5) !== 'https') {
+  location.href = `https${location.href.substring(4, location.href.length)}`;
+}
 
 const socket = io();
 
@@ -6,17 +8,17 @@ let producer = null;
 
 nameInput.value = 'user_' + Math.round(Math.random() * 1000);
 
-socket.request = function request(type, data = {}) {
-  return new Promise((resolve, reject) => {
-    socket.emit(type, data, (data) => {
-      if (data.error) {
-        reject(data.error);
-      } else {
-        resolve(data);
-      }
-    });
+socket.request = (type, data = {}) => new Promise((resolve, reject) => {
+  console.log(type, 'EMIT', data);
+  socket.emit(type, data, (data) => {
+    console.log(type, 'CALLBACK', data);
+    if (data.error) {
+      reject(data.error);
+    } else {
+      resolve(data);
+    }
   });
-};
+});
 
 let rc = null;
 
@@ -33,8 +35,7 @@ function joinRoom(name, room_id) {
 }
 
 function roomOpen() {
-  login.style.display = 'none'; // for #login display: flex
-  // login.className = 'hidden'
+  login.style.display = 'none';
   reveal(startAudioButton);
   hide(stopAudioButton);
   reveal(startVideoButton);
