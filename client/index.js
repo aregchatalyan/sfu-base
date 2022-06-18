@@ -1,7 +1,3 @@
-if (location.href.substring(0, 5) !== 'https') {
-  location.href = `https${location.href.substring(4, location.href.length)}`;
-}
-
 const socket = io();
 
 let producer = null;
@@ -9,9 +5,9 @@ let producer = null;
 nameInput.value = 'user_' + Math.round(Math.random() * 1000);
 
 socket.request = (type, data = {}) => new Promise((resolve, reject) => {
-  console.log(type, 'EMIT', data);
+  console.log('EMIT', type, data);
   socket.emit(type, data, (data) => {
-    console.log(type, 'CALLBACK', data);
+    console.log('CALLBACK', type, data);
     if (data.error) {
       reject(data.error);
     } else {

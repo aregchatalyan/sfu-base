@@ -23,10 +23,10 @@ const paths = [
     key_file: `${__dirname}/ssl/key.pem`,
     cert_file: `${__dirname}/ssl/cert.pem`
   },
-  {
-    key_file: `${__dirname}/client/src/ssl/key.pem`,
-    cert_file: `${__dirname}/client/src/ssl/cert.pem`
-  }
+  // {
+  //   key_file: `${__dirname}/client/src/ssl/key.pem`,
+  //   cert_file: `${__dirname}/client/src/ssl/cert.pem`
+  // }
 ];
 
 (async () => {

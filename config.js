@@ -1,4 +1,7 @@
 const os = require('os');
+const fs = require('fs');
+const path = require('path');
+
 const faces = os.networkInterfaces();
 
 const getLocalIp = () => {
@@ -16,8 +19,8 @@ const getLocalIp = () => {
 module.exports = {
   listenIp: 'localhost',
   listenPort: 3030,
-  sslCrt: './ssl/cert.pem',
-  sslKey: './ssl/key.pem',
+  sslCrt: fs.readFileSync(path.join(__dirname, 'ssl', 'cert.pem'), 'utf-8'),
+  sslKey: fs.readFileSync(path.join(__dirname, 'ssl', 'key.pem'), 'utf-8'),
 
   mediasoup: {
     // Worker settings
@@ -74,7 +77,9 @@ module.exports = {
       listenIps: [
         {
           ip: '0.0.0.0',
-          announcedIp: getLocalIp() // replace by client IP address
+          announcedIp: process.env.NODE_ENV === 'production' // replace by client IP address
+            ? '3.72.185.44'
+            : getLocalIp()
         }
       ],
       maxIncomingBitrate: 1500000,
