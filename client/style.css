@@ -69,7 +69,7 @@ body {
 }
 
 #devicesList {
-    width: 170px;
+    width: 198px;
     margin: 5px auto 0 auto;
 
     position: fixed;
@@ -81,20 +81,23 @@ body {
     margin-bottom: 2px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 #devicesList div div {
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 25px;
     margin-right: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+#devicesList div div i {
+    color: white;
+    margin-top: 4px;
 }
 
 #devicesList select {
     width: 100%;
+    padding: 4px;
 }
 
 
