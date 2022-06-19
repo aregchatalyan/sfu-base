@@ -339,9 +339,10 @@ class RoomClient {
         elem = document.createElement('video');
         elem.srcObject = stream;
         elem.id = producer.id;
-        elem.playsinline = false;
-        elem.autoplay = true;
-        elem.className = 'vid';
+        elem.setAttribute('playsinline', 'true');
+        elem.setAttribute('autoplay', 'true');
+        elem.setAttribute('muted', 'true');
+        // elem.className = 'vid';
         this.localMediaEl.appendChild(elem);
         this.handleFS(elem.id);
       }
@@ -404,8 +405,9 @@ class RoomClient {
           elem = document.createElement('video');
           elem.srcObject = stream;
           elem.id = consumer.id;
-          elem.playsinline = false;
-          elem.autoplay = true;
+          elem.setAttribute('playsinline', 'true');
+          elem.setAttribute('autoplay', 'true');
+          elem.setAttribute('muted', 'true');
           elem.className = 'vid';
           this.remoteVideoEl.appendChild(elem);
           this.handleFS(elem.id);
