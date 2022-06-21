@@ -3,31 +3,28 @@ const socket = io();
 let producer = null;
 
 nameInput.value = 'user_' + Math.round(Math.random() * 1000);
+roomIdInput.value = '1';
 
 socket.request = (type, data = {}) => new Promise((resolve, reject) => {
   console.log('EMIT', type, data);
+
   socket.emit(type, data, (data) => {
     console.log('CALLBACK', type, data);
-    if (data.error) {
-      reject(data.error);
-    } else {
-      resolve(data);
-    }
+
+    data.error ? reject(data.error) : resolve(data);
   });
 });
 
 let rc = null;
 
-function joinRoom(name, room_id) {
-  if (rc && rc.isOpen()) {
-    console.log('Already connected to a room');
-  } else {
-    initEnumerateDevices();
+async function joinRoom(name, room_id) {
+  if (rc?.isOpen()) return console.log('Already connected to a room');
 
-    rc = new RoomClient(localMedia, remoteVideos, remoteAudios, window.mediasoupClient, socket, room_id, name, roomOpen);
+  await initEnumerateDevices();
 
-    addListeners();
-  }
+  rc = new RoomClient(localMedia, remoteVideos, remoteAudios, window.mediasoupClient, socket, room_id, name, roomOpen);
+
+  addListeners();
 }
 
 function roomOpen() {
@@ -91,45 +88,37 @@ function addListeners() {
 
 let isEnumerateDevices = false;
 
-function initEnumerateDevices() {
-  // Many browsers, without the consent of getUserMedia, cannot enumerate the devices.
+async function initEnumerateDevices() {
   if (isEnumerateDevices) return;
 
-  const constraints = {
-    audio: true,
-    video: true
-  };
+  const constraints = { audio: true, video: true }
 
-  navigator.mediaDevices
-    .getUserMedia(constraints)
-    .then((stream) => {
-      enumerateDevices();
-      stream.getTracks().forEach(function (track) {
-        track.stop();
-      });
-    })
-    .catch((err) => {
-      console.error('Access denied for audio/video: ', err);
-    });
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints)
+    await enumerateDevices();
+    stream.getTracks().forEach(track => track.stop());
+  } catch (e) {
+    console.error('Access denied for audio/video: ', e);
+  }
 }
 
-function enumerateDevices() {
-  // Load mediaDevice options
-  navigator.mediaDevices.enumerateDevices().then((devices) =>
-    devices.forEach((device) => {
-      let el = null;
-      if ('audioinput' === device.kind) {
-        el = audioSelect;
-      } else if ('videoinput' === device.kind) {
-        el = videoSelect;
-      }
-      if (!el) return;
+async function enumerateDevices() {
+  const devices = await navigator.mediaDevices.enumerateDevices();
 
-      let option = document.createElement('option');
-      option.value = device.deviceId;
-      option.innerText = device.label;
-      el.appendChild(option);
-      isEnumerateDevices = true;
-    })
-  );
+  devices.forEach((device) => {
+    let el = null;
+
+    device.kind === 'audioinput' ? el = audioSelect
+      : device.kind === 'videoinput' ? el = videoSelect
+        : null
+
+    if (!el) return;
+
+    let option = document.createElement('option');
+    option.value = device.deviceId;
+    option.innerText = device.label;
+    el.appendChild(option);
+
+    isEnumerateDevices = true;
+  });
 }
