@@ -5,15 +5,12 @@
     box-sizing: border-box;
 }
 
-body {
-    background-color: black;
-}
-
 #login {
     width: 242px;
     margin: 100px auto;
     display: flex;
     flex-direction: column;
+    background-color: #5e5e5e;
     border: 1px solid white;
     padding: 10px;
     border-radius: 5px;
@@ -123,8 +120,9 @@ body {
 }
 
 .vid {
-    height: 312px;
+    height: 270px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .hidden {
